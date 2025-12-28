@@ -1,107 +1,185 @@
-# WEATHER ETL PIPELINE
-This is 
+# Ops Workflow Automation Platform  
+**End-to-End Data Ingestion, Validation, Orchestration & Analytics Pipeline**
 
-## Project Overview
-Event planning organizations face challenges when planning outdoor events due to unpredictable weather conditions. By leveraging weather data, these organizations can make informed decisions, optimize event schedules, and ensure better customer experiences. This project aims to create an ETL (Extract, Transform, Load) pipeline to collect, process, and visualize weather data to assist event planners in making data-driven decisions
+---
 
-## Systems Architecture
+## 📌 Overview
+
+This project is a **production-grade data workflow automation platform** designed to simulate how modern analytics teams ingest, validate, version, orchestrate, and analyze data at scale.
+
+It combines **FastAPI**, **PostgreSQL**, **Apache Airflow**, **Streamlit**, and **Docker** to deliver a fully automated, analyst-friendly data pipeline with strong emphasis on **data quality, reliability, and reproducibility**.
+
+The system is built to mirror **real-world data engineering & analytics workflows** used in fintech, SaaS, and product analytics teams.
+
+---
+
+## 🎯 Key Objectives
+
+- Ensure **high-quality, trusted data** through automated validation
+- Enable **idempotent & incremental data loads**
+- Maintain **dataset versioning & metadata tracking**
+- Provide **self-serve data quality dashboards** for analysts
+- Orchestrate workflows reliably using **Airflow**
+- Reduce manual operations, latency, and data errors
+
+---
+
+## 🏗️ Architecture
+
+Streamlit UI
+|
+| (CSV Upload)
+v
+FastAPI (Upload & Validation Service)
+|
+|-- Schema Validation
+|-- Deduplication
+|-- Dataset Versioning
+|-- Data Quality Metrics
+|
+v
+PostgreSQL (Analytics Warehouse)
+|
+v
+Apache Airflow (Workflow Orchestration)
+|
+v
+Downstream Transformations & Loads
 
 
-## Objectives
-1. Collect weather data from an external API.
-2. Transform and clean the data for analysis.
-3. Load the processed data into a PostgreSQL database.
-4. Create visualizations to provide insights into weather patterns.
-5. Schedule and automate the entire ETL process using Apache Airflow.
 
-## Scope
-This project focuses on building a robust and automated ETL pipeline using Python, Docker, PostgreSQL, and Apache Airflow, and visualizing the processed data using Matplotlib.
+All services run in **isolated Docker containers** using `docker-compose`.
 
-## Prerequisites
-Ensure you have the following installed:
-* Docker (including Docker Compose)
-* Python 3.7+
-* Airflow (included [Here](requirements.txt))
+---
 
-## Setup Instructions
+## ⚙️ Tech Stack
 
-### Clone The Repository
-```shell
-git clone https://github.com/yourusername/weather-etl-pipeline.git
-cd weather-etl-pipeline
+| Layer | Technology |
+|------|-----------|
+Backend API | **FastAPI**
+Database | **PostgreSQL**
+Workflow Orchestration | **Apache Airflow**
+Frontend Dashboard | **Streamlit**
+Data Processing | **Pandas**
+Containerization | **Docker & Docker Compose**
+ORM | **SQLAlchemy**
+
+---
+
+## 🚀 Features
+
+### ✅ Data Ingestion
+- Upload raw CSV datasets via Streamlit UI
+- FastAPI handles ingestion with schema enforcement
+
+### ✅ Data Validation & Quality Checks
+- Schema validation
+- Null percentage calculation
+- Duplicate row detection
+- Checksum-based deduplication
+
+### ✅ Dataset Versioning & Metadata
+- Automatic dataset versioning per filename
+- Metadata tracking:
+  - Row counts
+  - Checksums
+  - Upload timestamps
+
+### ✅ Incremental & Idempotent Loads
+- Prevents duplicate inserts
+- Safe re-runs without corrupting data
+- Ensures consistent reporting
+
+### ✅ Workflow Orchestration
+- Automatically triggers Airflow DAG on successful upload
+- Enables downstream transformations & analytics jobs
+
+### ✅ Data Quality Dashboard
+- Streamlit dashboard showing:
+  - Null percentages
+  - Duplicate rows
+  - Dataset freshness
+  - Upload history
+- Built for analysts & non-technical stakeholders
+
+---
+
+## 📂 Project Structure
+
+ops_workflow_automation/
+│
+├── api/
+│ └── upload_service.py # FastAPI backend
+│
+├── dag/
+│ └── ops_workflow_automation_dag.py
+│
+├── ui/
+│ └── ops_uploader.py # Streamlit dashboard
+│
+├── raw_data/ # Sample input data
+│
+├── validation.py # Data validation logic
+├── ingest.py
+├── transformation.py
+├── load_to_postgres.py
+├── create_table.sql # DB schema
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+
+
+
+---
+
+## 🧪 How the Pipeline Works (Step-by-Step)
+
+1. User uploads a CSV via **Streamlit UI**
+2. FastAPI:
+   - Validates schema
+   - Computes data quality metrics
+   - Checks for duplicates using checksums
+3. Metadata & quality metrics stored in PostgreSQL
+4. Data loaded incrementally into analytics tables
+5. Airflow DAG is auto-triggered for downstream jobs
+6. Analysts monitor data quality via Streamlit dashboard
+
+---
+
+## 🛠️ Setup Instructions
+
+### Prerequisites
+- Docker & Docker Compose
+- Git
+
+---
+
+### Clone the Repository
+```bash
+git clone https://github.com/Advait-sankar/Ops_workflow_automation.git
+cd Ops_workflow_automation
+```
+### ▶️ Start the Platform
+
+```bash
+docker-compose up --build
 ```
 
-### Install Dependencies
-```shell
-pip install -r requirements.txt
-```
+### 📊 Use Cases
+1. Data Analyst: Monitor data quality, freshness, and anomalies
+2. Business Analyst: Trust metrics, dashboards, and reporting inputs
+3. Product Analyst: Reliable experiment data and KPI pipelines
+4. Data Engineer: Orchestrate, monitor, and scale workflows
 
-### Set Up Environment Variables
-Create a .env file in the root directory and add the necessary environment variables:
 
-```shell
-API_KEY=your_api_key
-SMS_API_KEY=your_sms_api_key
-SMS_RECIPIENT=recipient_number
-POSTGRES_USER=your_postgres_user
-POSTGRES_PASSWORD=your_postgres_password
-POSTGRES_DB=your_database_name
-```
+### 📈 Why This Project Matters
+This project demonstrates:
+    1. Real-world analytics engineering practices
+    2. Strong data quality ownership and validation
+    3. Production-ready workflow orchestration with Airflow
+    4. Analyst-first, self-serve dashboards
+    5. End-to-end system thinking, not just scripts
+It is intentionally designed to align with Data Analyst, Business Analyst, and Product Analyst roles in modern data-driven organizations.
 
-### Start the Docker Container
-```shell
-docker-compose up -d
-```
-
-### Initialize the airflow
-```shell
-airflow db init
-```
-
-### Add Airflow User
-```shell
-airflow users create \
-    --username admin \
-    --firstname FIRST_NAME \
-    --lastname LAST_NAME \
-    --role Admin \
-    --email admin@example.com
-```
-
-### Start Airflow Scheduler and Webserver
-In separate terminals, run the following commands:
-
-```shell
-airflow scheduler
-```
-
-```shell
-airflow webserver -p 8080
-```
-
-### Load and Trigger the DAG
-1. Copy your DAG script (weather_data_pipeline_dag.py) to the Airflow DAGs folder (~/airflow/dags).
-2. Access the Airflow web interface at http://localhost:8080.
-3. Toggle the switch to activate your DAG.
-4. Trigger the DAG manually or wait for the scheduled run.
-
-## Procedure
-1. **Data Ingestion** : Collects weather data from an external API and stores it temporarily
-2. **Data Transformation** : Cleans and processes the raw data for analysis.
-3. **Data Loading** : Loads the transformed data into a PostgreSQL database.
-4. **Visualization** : Uses Matplotlib to create visualizations of weather patterns.
-
-## Example Directory Structure
-
-## Weather Data Visualization
-This visualization shows the processed weather data, providing insights into weather patterns that can help event planners make informed decisions.
-
-![Weather Dashboard](assets/dashboard.png)
-
-## Future Work
-* Deploy the pipeline on a cloud platform for better scalability and availability.
-* Integrate real-time data processing capabilities.
-* Enhance visualizations using advanced BI tools like Power BI or Tableau.
-
-## Conclusion
-This project demonstrates how to build an automated ETL pipeline using modern data engineering tools and technologies. The pipeline efficiently collects, processes, and visualizes weather data to aid event planning organizations in making informed decisions.
