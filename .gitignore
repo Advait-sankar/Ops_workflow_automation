@@ -1,0 +1,6 @@
+__pycache__/
+.env
+*.env
+*.ipynb
+.vscode/
+raw_data/
